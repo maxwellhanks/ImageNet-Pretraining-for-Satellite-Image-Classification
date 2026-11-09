@@ -1,0 +1,26 @@
+# Python/uv
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# Datasets and caches
+data/
+
+# Model weights/checkpoints
+*.pt
+*.pth
+*.ckpt
+checkpoints/
+
+# Notebooks/editors/OS
+.ipynb_checkpoints/
+.vscode/
+.idea/
+.DS_Store
+
+# Scratch results from tests
+results/_scratch/

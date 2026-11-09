@@ -1,0 +1,30 @@
+# Few-shot transfer on UC Merced: does EuroSAT training make a backbone better or worse at a
+# new sensor? Linear probes (frozen backbone) on growing stratified UC Merced subsets of
+#   * the unmodified pretrained backbones (ImageNet / SSL4EO)          -> init_from: null
+#   * the same backbones after fine-tuning on 1 % / 10 % / 100 % EuroSAT -> init_from: "@<fraction>"
+# "@<fraction>" = the fine-tune counterpart of the probe model (resnet50_imagenet for
+# resnet50_imagenet_linear_probe) trained on that EuroSAT fraction with the *same seed*, resolved
+# through results/runs/*.csv to a local checkpoints/<hash>.pt (run baseline_label_efficiency first).
+#
+# UC Merced: 1 200 images in 7 of the 10 EuroSAT classes, 60/20/20 split generated on first use
+# (splits/uc_merced_rgb_split.csv -- commit it). Fractions are shots per class
+# (100-image classes / Highway / Residential):
+#   0.02 -> 1 / 4 / 5     0.05 -> 3 / 9 / 12     0.10 -> 6 / 18 / 24
+#   0.25 -> 15 / 45 / 60  0.50 -> 30 / 90 / 120  1.0 -> 60 / 180 / 240
+#
+#   uv run satbench run --config configs/ucm_fewshot_linear_probe.yaml --user felix --seeds 0
+experiment: ucm_fewshot_linear_probe
+dataset: uc_merced_rgb
+models: [resnet50_imagenet_linear_probe, resnet50_ssl4eo_linear_probe]
+init_from: [null, "@0.01", "@0.1", "@1.0"]
+train_fractions: [0.0, 0.02, 0.05, 0.10, 0.25, 0.50, 1.0]
+seeds: [0, 1, 2]
+
+epochs: 25
+batch_size: 32
+lr: 1.0e-2            # probe lr from the linear_probe_lr sweep (1e-4 under-trains frozen features)
+weight_decay: 1.0e-2
+image_size: 224
+select_best_on_val: true
+
+model_overrides: {}

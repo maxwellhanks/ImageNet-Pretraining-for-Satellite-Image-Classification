@@ -1,0 +1,9 @@
+# End-to-end sanity check: every model, 1% of the data, 1 epoch, subsampled
+# val/test. Takes a few minutes on a GPU. Run this first on every new machine.
+experiment: smoke_test
+dataset: eurosat_rgb
+models: [linear, resnet50_random, resnet50_imagenet, resnet50_imagenet_linear_probe, resnet50_ssl4eo, resnet50_ssl4eo_linear_probe, vit_b16_random, vit_b16_imagenet, vit_b16_imagenet_linear_probe]
+train_fractions: [0.01]
+seeds: [0]
+epochs: 1
+eval_limit: 500
