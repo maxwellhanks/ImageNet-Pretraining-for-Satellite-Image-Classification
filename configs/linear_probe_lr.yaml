@@ -1,0 +1,24 @@
+# Learning-rate sweep for the frozen-backbone linear probes.
+# At lr 1e-4 the SSL4EO probe ends 25 epochs with train loss ~2.2 at 1%
+# (uniform guessing is ln 10 = 2.30) and best_epoch ~25, i.e. it is
+# under-trained rather than limited by its features.
+# The lr is part of the config hash, so sweep it via the CLI, one call per lr:
+#   uv run satbench run --config configs/linear_probe_lr.yaml --user felix --lr 1.0e-3
+#   uv run satbench run --config configs/linear_probe_lr.yaml --user felix --lr 1.0e-2
+#   uv run satbench run --config configs/linear_probe_lr.yaml --user felix --lr 1.0e-1
+# Pick the lr per model on best_val_acc (not test_acc), then set it in
+# baseline_label_efficiency.yaml under model_overrides.
+experiment: linear_probe_lr
+dataset: eurosat_rgb
+models: [resnet50_random_linear_probe, resnet50_imagenet_linear_probe, resnet50_ssl4eo_linear_probe]
+train_fractions: [0.0, 0.01, 0.02, 0.05, 0.10, 0.25, 0.50, 1.0]
+seeds: [0]
+
+epochs: 25
+batch_size: 64
+lr: 1.0e-1            # default; override with --lr for the other sweep points
+weight_decay: 1.0e-2
+image_size: 224
+select_best_on_val: true
+
+model_overrides: {}

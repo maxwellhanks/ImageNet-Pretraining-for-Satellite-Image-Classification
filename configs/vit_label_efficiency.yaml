@@ -1,0 +1,17 @@
+# Label efficiency of ViT-B/16 on EuroSAT RGB (same protocol as baseline_label_efficiency).
+# Kept separate so ResNet sweeps stay unchanged and work can be split by architecture.
+#   uv run satbench run --config configs/vit_label_efficiency.yaml --user felix --seeds 0
+experiment: vit_label_efficiency
+dataset: eurosat_rgb
+models: [vit_b16_random, vit_b16_random_linear_probe, vit_b16_imagenet, vit_b16_imagenet_linear_probe]
+train_fractions: [0.0, 0.01, 0.02, 0.05, 0.10, 0.25, 0.50, 1.0]
+seeds: [0, 1, 2]
+
+epochs: 25
+batch_size: 32        # ViT-B/16 is heavier than ResNet-50 at the same image size
+lr: 1.0e-4
+weight_decay: 1.0e-2
+image_size: 224       # must be divisible by patch size 16
+select_best_on_val: true
+
+model_overrides: {}

@@ -1,0 +1,28 @@
+# Step 1 of the project: label efficiency of the baselines on EuroSAT RGB.
+# Adding a model to `models` only runs the new model's cells; completed runs of
+# the other models keep their config_hash and are skipped.
+# Split work between members via overrides, e.g. one person per seed:
+#   uv run satbench run --config configs/baseline_label_efficiency.yaml --user felix --seeds 0
+experiment: baseline_label_efficiency
+dataset: eurosat_rgb
+models: [linear, resnet50_random, resnet50_random_linear_probe, resnet50_imagenet, resnet50_imagenet_linear_probe, resnet50_ssl4eo, resnet50_ssl4eo_linear_probe]
+train_fractions: [0.0, 0.01, 0.02, 0.05, 0.10, 0.25, 0.50, 1.0]
+seeds: [0, 1, 2]
+
+epochs: 25
+batch_size: 64
+lr: 1.0e-4            # write floats with a dot: YAML reads `1e-4` as a string
+weight_decay: 1.0e-2
+image_size: 224       # ResNet input size (EuroSAT patches are upsampled from 64)
+select_best_on_val: true
+
+# Per-model hyperparameter overrides (keys: epochs, batch_size, lr,
+# weight_decay, image_size), e.g.
+# model_overrides:
+#   linear: {lr: 1.0e-3}
+# Linear probes need a higher lr than fine-tuning; pick it from the
+# linear_probe_lr sweep (configs/linear_probe_lr.yaml), e.g.
+#   resnet50_random_linear_probe:   {lr: ...}
+#   resnet50_imagenet_linear_probe: {lr: ...}
+#   resnet50_ssl4eo_linear_probe:   {lr: ...}
+model_overrides: {}
